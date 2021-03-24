@@ -10,6 +10,7 @@ import EditMovieForm from './components/EditMovieForm';
 import FavoriteMovieList from './components/FavoriteMovieList';
 
 import axios from 'axios';
+import AddMovieForm from './components/AddMovieForm';
 
 const App = (props) => {
   const [movies, setMovies] = useState([]);
@@ -26,9 +27,16 @@ const App = (props) => {
       });
   }, []);
 
-  const deleteMovie = (id) => {};
+  const deleteMovie = (movies) => {
+    setMovies(movies);
+  };
 
-  const addToFavorites = (movie) => {};
+  const addToFavorites = (movie) => {
+    const duplicateMovie = favoriteMovies.find((mov) => movie.id === mov.id);
+    if (!duplicateMovie) {
+      setFavoriteMovies([...favoriteMovies, movie]);
+    }
+  };
 
   return (
     <div>
@@ -49,8 +57,14 @@ const App = (props) => {
               <EditMovieForm setMovies={setMovies} movies={movies} />
             </Route>
 
+            <Route exact path="/movies/add">
+              <AddMovieForm setMovies={setMovies} />
+            </Route>
             <Route path="/movies/:id">
-              <Movie />
+              <Movie
+                deleteMovie={deleteMovie}
+                addToFavorites={addToFavorites}
+              />
             </Route>
 
             <Route path="/movies">

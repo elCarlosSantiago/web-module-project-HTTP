@@ -27,7 +27,7 @@ const EditMovieForm = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [id]);
 
   const handleChange = (e) => {
     setMovie({
@@ -43,7 +43,7 @@ const EditMovieForm = (props) => {
       .then((res) => {
         setMovies(
           movies.map((movie) => {
-            if (movie.id == id) {
+            if (movie.id === id) {
               return res.data;
             } else {
               return movie;
@@ -120,7 +120,7 @@ const EditMovieForm = (props) => {
           </div>
           <div className="modal-footer">
             <input type="submit" className="btn btn-info" value="Save" />
-            <Link to={`/movies/1`}>
+            <Link to={`/movies/${id}`}>
               <input type="button" className="btn btn-default" value="Cancel" />
             </Link>
           </div>

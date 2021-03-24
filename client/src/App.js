@@ -11,10 +11,16 @@ import FavoriteMovieList from './components/FavoriteMovieList';
 
 import axios from 'axios';
 import AddMovieForm from './components/AddMovieForm';
+import DeleteMovieModal from './components/DeleteMovieModal';
+
+import useLocalStorage from './hooks/useLocalStorage';
 
 const App = (props) => {
   const [movies, setMovies] = useState([]);
-  const [favoriteMovies, setFavoriteMovies] = useState([]);
+  const [favoriteMovies, setFavoriteMovies] = useLocalStorage(
+    'favoriteMovies',
+    []
+  );
 
   useEffect(() => {
     axios
@@ -60,11 +66,11 @@ const App = (props) => {
             <Route exact path="/movies/add">
               <AddMovieForm setMovies={setMovies} />
             </Route>
+            <Route path="/movies/delete/:id">
+              <DeleteMovieModal deleteMovie={deleteMovie} />
+            </Route>
             <Route path="/movies/:id">
-              <Movie
-                deleteMovie={deleteMovie}
-                addToFavorites={addToFavorites}
-              />
+              <Movie addToFavorites={addToFavorites} />
             </Route>
 
             <Route path="/movies">

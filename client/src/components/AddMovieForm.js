@@ -1,33 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-
 import axios from 'axios';
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+const initialValues = {
+  title: '',
+  director: '',
+  genre: '',
+  metascore: 0,
+  description: '',
+  id: '',
+};
 
-const EditMovieForm = (props) => {
+const AddMovieForm = (props) => {
+  const [movie, setMovie] = useState(initialValues);
+  const { title, director, genre, metascore, description } = movie;
   const { push } = useHistory();
-  const { id } = useParams();
-  const { setMovies, movies } = props;
-
-  const [movie, setMovie] = useState({
-    title: '',
-    director: '',
-    genre: '',
-    metascore: 0,
-    description: '',
-    id: id,
-  });
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/movies/${id}`)
-      .then((res) => {
-        setMovie(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [id]);
 
   const handleChange = (e) => {
     setMovie({
@@ -39,25 +25,16 @@ const EditMovieForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(`http://localhost:5000/api/movies/${id}`, movie)
+      .post('http://localhost:5000/api/movies', movie)
       .then((res) => {
-        setMovies(
-          movies.map((movie) => {
-            if (movie.id === id) {
-              return res.data;
-            } else {
-              return movie;
-            }
-          })
-        );
-        push(`/movies/${id}`);
+        console.log(res.data);
+        props.setMovies(res.data);
+        push('/movies');
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err);
       });
   };
-
-  const { title, director, genre, metascore, description } = movie;
 
   return (
     <div className="col">
@@ -65,7 +42,7 @@ const EditMovieForm = (props) => {
         <form onSubmit={handleSubmit}>
           <div className="modal-header">
             <h4 className="modal-title">
-              Editing <strong>{movie.title}</strong>
+              Add Movie <strong>{movie.title}</strong>
             </h4>
           </div>
           <div className="modal-body">
@@ -119,8 +96,8 @@ const EditMovieForm = (props) => {
             </div>
           </div>
           <div className="modal-footer">
-            <input type="submit" className="btn btn-info" value="Save" />
-            <Link to={`/movies/${id}`}>
+            <input type="submit" className="btn btn-info" value="Add" />
+            <Link to={`/movies/`}>
               <input type="button" className="btn btn-default" value="Cancel" />
             </Link>
           </div>
@@ -130,4 +107,4 @@ const EditMovieForm = (props) => {
   );
 };
 
-export default EditMovieForm;
+export default AddMovieForm;
